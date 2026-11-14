@@ -11,3 +11,4 @@ sounddevice>=0.5.0
 scipy>=1.11.0
 numpy>=1.26.0
 tqdm>=4.66.0
+tavily-python>=0.5.0
