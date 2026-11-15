@@ -26,23 +26,7 @@ Los documentos fuente **nunca** se envían completos a servicios externos: solo 
 
 ## Arquitectura del agente
 
-```mermaid
-flowchart TD
-    Usuario(["Usuario"]) -->|Pregunta| LLM["LLM (Groq)<br/>System Prompt + Tools"]
-
-    LLM -->|Sin tool| Respuesta(["Respuesta final<br/>(Citas base y/o web)"])
-    LLM -->|buscar_en_base| Chroma[("Chroma Local<br/>Base de conocimientos")]
-    LLM -->|buscar_en_web| Tavily(("Tavily API<br/>Búsqueda web permitida"))
-    LLM -->|verificar_comando_destructivo| ReglaRiesgo["Reglas en código<br/>Análisis de riesgo Git"]
-    LLM -->|generar_referencia_apa| ReglaAPA["Reglas en código<br/>Formateo APA 7"]
-
-    Chroma -->|"Fragmentos<br/>[Fuente: doc, sección]"| ToolMsg["ToolMessage"]
-    Tavily -->|"Título + URL + Extracto<br/>[web: URL]"| ToolMsg
-    ReglaRiesgo -->|"Nivel de riesgo y advertencia"| ToolMsg
-    ReglaAPA -->|"Cita estructurada"| ToolMsg
-
-    ToolMsg -->|Contexto al LLM| LLM
-```
+<img width="2297" height="1489" alt="mermaid-diagram-2026-11-14-184812" src="https://github.com/user-attachments/assets/4448bd60-cbab-4c40-a409-c391263ace31" />
 
 **Qué sale del sistema**
 
