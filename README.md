@@ -26,25 +26,22 @@ Los documentos fuente **nunca** se envían completos a servicios externos: solo 
 
 ## Arquitectura del agente
 
-```
-Usuario
-   │
-   ▼
-Pregunta ──► LLM (System Prompt + tools)
-               │
-               ├─ sin tool ──► respuesta directa (saludo / charla)
-               │
-               ├─ buscar_en_base ──► ChromaDB (local) ──► fragmentos
-               │         │
-               │         └──► ToolMessage ──► LLM ──► respuesta + citas
-               │
-               ├─ verificar_comando_destructivo / generar_referencia_apa
-               │         │
-               │         └──► regla exacta / APA ──► LLM ──► respuesta
-               │
-               └─ buscar_en_web ──► Tavily (solo dominios permitidos)
-                         │
-                         └──► título + URL + extracto ──► LLM ──► respuesta [web: URL]
+```mermaid
+flowchart TD
+    Usuario(["Usuario"]) -->|Pregunta| LLM["LLM (Groq)<br/>System Prompt + Tools"]
+
+    LLM -->|Sin tool| Respuesta(["Respuesta final<br/>(Citas base y/o web)"])
+    LLM -->|buscar_en_base| Chroma[("Chroma Local<br/>Base de conocimientos")]
+    LLM -->|buscar_en_web| Tavily(("Tavily API<br/>Búsqueda web permitida"))
+    LLM -->|verificar_comando_destructivo| ReglaRiesgo["Reglas en código<br/>Análisis de riesgo Git"]
+    LLM -->|generar_referencia_apa| ReglaAPA["Reglas en código<br/>Formateo APA 7"]
+
+    Chroma -->|"Fragmentos<br/>[Fuente: doc, sección]"| ToolMsg["ToolMessage"]
+    Tavily -->|"Título + URL + Extracto<br/>[web: URL]"| ToolMsg
+    ReglaRiesgo -->|"Nivel de riesgo y advertencia"| ToolMsg
+    ReglaAPA -->|"Cita estructurada"| ToolMsg
+
+    ToolMsg -->|Contexto al LLM| LLM
 ```
 
 **Qué sale del sistema**
@@ -121,7 +118,7 @@ python -m src.agent
 ## Estructura del repositorio
 
 ```
-SegundaEntrega/
+Entrega_Final_Chat_Git/
 ├── app/
 │   └── streamlit_app.py          # Interfaz del agente (tools + fuentes)
 ├── data/docs/                    # Corpus (manuales Git)
@@ -150,8 +147,8 @@ SegundaEntrega/
 
 ```bash
 # 1. Clonar
-git clone https://github.com/leiss20/SegundaEntrega.git
-cd SegundaEntrega
+git clone https://github.com/ProyectoDesarrollo-1/Entrega_Final_Chat_Git.git
+cd Entrega_Final_Chat_Git
 
 # 2. Entorno virtual
 python -m venv .venv
@@ -205,10 +202,10 @@ TAVILY_API_KEY = "tvly_..."
 4. Si el índice Chroma no está en el repo, la app lo regenera al arranque (`ensure_index`).
 
 **URL pública:**  
-https://segundaentrega-kt8falpwttzfwzkxgwkzsq.streamlit.app/
+https://entregafinalchatgit-bqbdvtfsvb5pxlnrotkhdq.streamlit.app/
 
 **Repositorio:**  
-https://github.com/leiss20/SegundaEntrega.git
+https://github.com/ProyectoDesarrollo-1/Entrega_Final_Chat_Git.git
 
 ---
 
